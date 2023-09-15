@@ -5,7 +5,10 @@ import base64
 
 
 from src.models.models import UserMeasurement, UserProfile
+from src.services.body_measurement import get_body_measurements
+from src.common.logger import get_logger
 
+logger = get_logger(__name__)
 
 class Measurements(object):
     def on_get(self, req, resp):
@@ -26,54 +29,57 @@ class Measurements(object):
         try:
             body = req.context['json']
 
+            user_profile = body["userProfile"]
+            
             if 'measurements' in body:
                 # Handle measurements
                 measurements = body["measurements"]
-
-                existing_measurements = UserMeasurement.objects(
-                    userProfile=measurements["userProfile"])
-
-                if existing_measurements:
-                    existing_measurement = existing_measurements[0]
-
-                    existing_measurement.chestSize = measurements["chestSize"]
-                    existing_measurement.hipSize = measurements["hipSize"]
-                    existing_measurement.waistSize = measurements["waistSize"]
-                    existing_measurement.inseamLength = measurements["inseamLength"]
-                    existing_measurement.save()
-                else:
-                    newMeasurement = UserMeasurement(
-                        chestSize=measurements["chestSize"],
-                        hipSize=measurements["hipSize"],
-                        waistSize=measurements["waistSize"],
-                        inseamLength=measurements["inseamLength"],
-                        userProfile=measurements["userProfile"]
-                    )
-                    newMeasurement.save()
-
-                resp_text = {
-                    'status': 'ok',
-                    'message': 'Measurement updated or created successfully.'
-                }
-
-            elif 'front_image_url' in body:
-                front_image_url = body["front_image_url"]
-                side_image_url = body["side_image_url"]
-                resp_text = {
-                    'status': 'ok',
-                    'message': 'Image URL processed successfully.'
-                }
-
             else:
-                resp.status = falcon.HTTP_400
-                resp_text = {
-                    'status': 'error',
-                    'message': 'Request body should contain either "measurements" or "image urls".'
-                }
+                if body.get("front_image_url") is None:
+                    resp.status = falcon.HTTP_400
+                    resp_text = {
+                        'status': 'error',
+                        'message': 'Request body should contain either "measurements" or "image urls".'
+                    }
+                    return
+                front_image_url = body["front_image_url"]
+                # side_image_url = body["side_image_url"]                
+                measurements = get_body_measurements(front_image_url)
+                
+            existing_measurements = UserMeasurement.objects(
+                userProfile=user_profile)
 
+            measurement_obj = None
+            if existing_measurements:
+                measurement_obj = existing_measurements[0]
+
+                measurement_obj.height = measurements["height"]
+                measurement_obj.inseamLength = measurements["inseamLength"]
+                measurement_obj.hipSize = measurements["hipSize"]
+                measurement_obj.chestSize = measurements["chestSize"]
+                measurement_obj.shoulder = measurements["shoulder"]
+                
+                measurement_obj.save()
+            else:
+                measurement_obj = UserMeasurement(
+                    height=measurements["height"],
+                    inseamLength=measurements["inseamLength"],
+                    hipSize=measurements["hipSize"],                        
+                    chestSize=measurements["chestSize"],                        
+                    shoulder=measurements["shoulder"],                        
+                    userProfile=user_profile
+                )
+                measurement_obj.save()
+
+            resp_text = {
+                'status': 'ok',
+                'message': 'Measurement updated or created successfully.',
+                "measurement": json.loads(json_util.dumps(measurement_obj.to_mongo))
+            }
             resp.status = falcon.HTTP_200
             resp.text = json.dumps(resp_text)
-        except Exception as ex:
+        except Exception as e:
+            logger.error(f"Error getting measurements:{e}", exc_info=True)
             resp.status = falcon.HTTP_500
             resp.text = json.dumps({
                 'status': 'error',
