@@ -37,11 +37,19 @@ class Outfit(Document):
 
 
 class UserMeasurement(Document):
-    chestSize = StringField(default="")
     userProfile = ReferenceField(UserProfile)
-    waistSize = StringField(default="")
-    hipSize = StringField(default="")
-    inseamLength = StringField(default="")
+    height = FloatField()
+    inseamLength = FloatField()
+    hipSize = FloatField()
+    chestSize = FloatField()
+    shoulder = FloatField()
+
+
+class DefaultOption(Document):
+    outfit = ReferenceField(Outfit)
+    fabric = ReferenceField(Fabric)
+    neckPattern = StringField(default="")
+    sleevePattern = StringField(default="")
 
 
 class CustomisedOption(Document):

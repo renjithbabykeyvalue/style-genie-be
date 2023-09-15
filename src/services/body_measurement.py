@@ -7,10 +7,10 @@ def _format_response(measurements):
     height, leg, hip, shoulder, markers, _ = measurements
     return {
         "height": height,
-        "leg": leg,
-        "hip": hip,
+        "inseamLength": leg,
+        "hipSize": hip,
         "shoulder": shoulder,
-        "chest": 0.8 * (shoulder or 42)
+        "chestSize": 0.8 * (shoulder or 42)
     }
 
 def get_body_measurements(file_url):    
