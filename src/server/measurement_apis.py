@@ -3,7 +3,7 @@ import falcon
 from bson import json_util
 
 from src.models.models import UserMeasurement, UserProfile
-
+from src.services.body_measurement import get_body_measurements
 
 class Measurements(object):
     def on_get(self, req, resp):
@@ -22,11 +22,19 @@ class Measurements(object):
         })
 
     def on_post(self, req, resp):
-        print(req)
-        incoming_file = req.get_param("file")
-        print(incoming_file)
+        body = req.context['json']
+        front_image = body.get("front_image")
+        if front_image is None:
+            resp.status = falcon.HTTP_400
+            resp.text = json.dumps({
+                'status': 'failed',
+                'message': 'front_image is mandatory',
+            })
+            return
+        measurements = get_body_measurements(front_image)
         resp.status = falcon.HTTP_200
         resp.text = json.dumps({
             'status': 'ok',
-            'message': 'Images uploaded successfully.',
+            'message': 'Obtained measurements.',
+            'content': measurements
         })

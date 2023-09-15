@@ -1,4 +1,4 @@
-numpy==1.22.0
+numpy==1.23.5
 falcon==3.0.1
 falcon-marshmallow==0.3.0
 marshmallow==3.13.0
@@ -11,3 +11,8 @@ pika==0.13.1
 pymongo==4.5.0
 mongoengine== 0.27.0
 falcon-multipart==0.2.0
+body-matrix==0.4.4
+av==10.0.0
+seaborn==0.12.2
+torchvision==0.15.2
+boto3

@@ -9,6 +9,8 @@ from src.server.measurement_apis import Measurements
 from src.server.jwt_middleware import DummyJWTMiddleware, JWTMiddleware
 from falcon_multipart.middleware import MultipartMiddleware
 import mongoengine as mongo
+from src.server.serve_images import ImageStore, Item
+from src.config import STORAGE_PATH
 
 import settings
 
@@ -16,9 +18,11 @@ jwt_secret = os.environ.get('JWT_SECRET')
 
 
 def create_app(test_mode=False):
+    
+    image_store = ImageStore(STORAGE_PATH)
     if test_mode is False:
         _app = falcon.App(middleware=[
-            JWTMiddleware(jwt_secret),
+            # JWTMiddleware(jwt_secret),
             Marshmallow(),
             falcon.CORSMiddleware(allow_origins='*', allow_credentials='*'),
             MultipartMiddleware()
@@ -38,7 +42,7 @@ def create_app(test_mode=False):
     _app.add_route('/api/health', Health())
     _app.add_route('/api/outfit', Outfits())
     _app.add_route('/api/user-measurement', Measurements())
-
+    _app.add_route('/images/{name}', Item(image_store))
     mongo.connect(
         host=settings.MONGO['HOST'],
         db=settings.MONGO['DATABASE']
