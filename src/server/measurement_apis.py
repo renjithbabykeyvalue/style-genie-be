@@ -16,7 +16,6 @@ class Measurements(object):
         measurement = [measurement.to_mongo()
                        for measurement in UserMeasurement.objects(**query)]
 
-        print(measurement.__len__())
         resp.status = falcon.HTTP_200
         resp.text = json.dumps({
             'status': 'ok',
@@ -24,10 +23,59 @@ class Measurements(object):
         })
 
     def on_post(self, req, resp):
-        print(req)
-        print(req.stream.read().decode('utf-8'))
-        resp.status = falcon.HTTP_200
-        resp.text = json.dumps({
-            'status': 'ok',
-            'message': 'Images uploaded successfully.'
-        })
+        try:
+            body = req.context['json']
+
+            if 'measurements' in body:
+                # Handle measurements
+                measurements = body["measurements"]
+
+                existing_measurements = UserMeasurement.objects(
+                    userProfile=measurements["userProfile"])
+
+                if existing_measurements:
+                    existing_measurement = existing_measurements[0]
+
+                    existing_measurement.chestSize = measurements["chestSize"]
+                    existing_measurement.hipSize = measurements["hipSize"]
+                    existing_measurement.waistSize = measurements["waistSize"]
+                    existing_measurement.inseamLength = measurements["inseamLength"]
+                    existing_measurement.save()
+                else:
+                    newMeasurement = UserMeasurement(
+                        chestSize=measurements["chestSize"],
+                        hipSize=measurements["hipSize"],
+                        waistSize=measurements["waistSize"],
+                        inseamLength=measurements["inseamLength"],
+                        userProfile=measurements["userProfile"]
+                    )
+                    newMeasurement.save()
+
+                resp_text = {
+                    'status': 'ok',
+                    'message': 'Measurement updated or created successfully.'
+                }
+
+            elif 'front_image' in body:
+                front_image = body["front_image"]
+                side_image = body["side_image"]
+                resp_text = {
+                    'status': 'ok',
+                    'message': 'Image URL processed successfully.'
+                }
+
+            else:
+                resp.status = falcon.HTTP_400
+                resp_text = {
+                    'status': 'error',
+                    'message': 'Request body should contain either "measurements" or "image urls".'
+                }
+
+            resp.status = falcon.HTTP_200
+            resp.text = json.dumps(resp_text)
+        except Exception as ex:
+            resp.status = falcon.HTTP_500
+            resp.text = json.dumps({
+                'status': 'error',
+                'message': 'Internal server error.'
+            })
