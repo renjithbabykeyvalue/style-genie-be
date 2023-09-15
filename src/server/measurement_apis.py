@@ -56,9 +56,9 @@ class Measurements(object):
                     'message': 'Measurement updated or created successfully.'
                 }
 
-            elif 'front_image' in body:
-                front_image = body["front_image"]
-                side_image = body["side_image"]
+            elif 'front_image_url' in body:
+                front_image_url = body["front_image_url"]
+                side_image_url = body["side_image_url"]
                 resp_text = {
                     'status': 'ok',
                     'message': 'Image URL processed successfully.'
