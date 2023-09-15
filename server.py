@@ -6,8 +6,9 @@ from pymongo import MongoClient
 from src.server.health import Health
 from src.server.outfits_apis import Outfits
 from src.server.measurement_apis import Measurements
+from src.server.designer_apis import Designers
+from src.server.default_options_apis import DefaultOptions
 from src.server.jwt_middleware import DummyJWTMiddleware, JWTMiddleware
-from falcon_multipart.middleware import MultipartMiddleware
 import mongoengine as mongo
 
 import settings
@@ -21,7 +22,6 @@ def create_app(test_mode=False):
             JWTMiddleware(jwt_secret),
             Marshmallow(),
             falcon.CORSMiddleware(allow_origins='*', allow_credentials='*'),
-            MultipartMiddleware()
         ])
     else:
         _app = falcon.App(middleware=[
@@ -38,6 +38,8 @@ def create_app(test_mode=False):
     _app.add_route('/api/health', Health())
     _app.add_route('/api/outfit', Outfits())
     _app.add_route('/api/user-measurement', Measurements())
+    _app.add_route('/api/designer', Designers())
+    _app.add_route('/api/default-options', DefaultOptions())
 
     mongo.connect(
         host=settings.MONGO['HOST'],

@@ -14,6 +14,8 @@ class JWTMiddleware(object):
             '/api/health',
             '/api/outfit',
             '/api/user-measurement',
+            '/api/designer',
+            '/api/default-options',
             '/api/public/fonts',
         ]
 

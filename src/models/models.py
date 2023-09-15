@@ -44,6 +44,13 @@ class UserMeasurement(Document):
     inseamLength = StringField(default="")
 
 
+class DefaultOption(Document):
+    outfit = ReferenceField(Outfit)
+    fabric = ReferenceField(Fabric)
+    neckPattern = StringField(default="")
+    sleevePattern = StringField(default="")
+
+
 class CustomisedOption(Document):
     userProfile = ReferenceField(UserProfile)
     outfit = ReferenceField(Outfit)

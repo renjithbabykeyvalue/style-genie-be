@@ -1,6 +1,8 @@
 import json
 import falcon
 from bson import json_util
+import base64
+
 
 from src.models.models import UserMeasurement, UserProfile
 
@@ -23,10 +25,9 @@ class Measurements(object):
 
     def on_post(self, req, resp):
         print(req)
-        incoming_file = req.get_param("file")
-        print(incoming_file)
+        print(req.stream.read().decode('utf-8'))
         resp.status = falcon.HTTP_200
         resp.text = json.dumps({
             'status': 'ok',
-            'message': 'Images uploaded successfully.',
+            'message': 'Images uploaded successfully.'
         })
