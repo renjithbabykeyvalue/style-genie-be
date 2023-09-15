@@ -11,9 +11,7 @@ class DesignerOutfits(object):
     def on_post(self, req, resp):
 
         try:
-            openai.my_api_key = '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'
             body = req.context['json']
-
             outfit = Outfit(
                 name=body['name'],
                 designer=body['designer'],
