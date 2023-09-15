@@ -10,6 +10,7 @@ from src.common.logger import get_logger
 
 logger = get_logger(__name__)
 
+
 class Measurements(object):
     def on_get(self, req, resp):
         id = req.get_param("id", default=None)
@@ -30,7 +31,7 @@ class Measurements(object):
             body = req.context['json']
 
             user_profile = body["userProfile"]
-            
+
             if 'measurements' in body:
                 # Handle measurements
                 measurements = body["measurements"]
@@ -43,9 +44,8 @@ class Measurements(object):
                     }
                     return
                 front_image_url = body["front_image_url"]
-                # side_image_url = body["side_image_url"]                
                 measurements = get_body_measurements(front_image_url)
-                
+
             existing_measurements = UserMeasurement.objects(
                 userProfile=user_profile)
 
@@ -58,15 +58,15 @@ class Measurements(object):
                 measurement_obj.hipSize = measurements["hipSize"]
                 measurement_obj.chestSize = measurements["chestSize"]
                 measurement_obj.shoulder = measurements["shoulder"]
-                
+
                 measurement_obj.save()
             else:
                 measurement_obj = UserMeasurement(
                     height=measurements["height"],
                     inseamLength=measurements["inseamLength"],
-                    hipSize=measurements["hipSize"],                        
-                    chestSize=measurements["chestSize"],                        
-                    shoulder=measurements["shoulder"],                        
+                    hipSize=measurements["hipSize"],
+                    chestSize=measurements["chestSize"],
+                    shoulder=measurements["shoulder"],
                     userProfile=user_profile
                 )
                 measurement_obj.save()
@@ -74,7 +74,7 @@ class Measurements(object):
             resp_text = {
                 'status': 'ok',
                 'message': 'Measurement updated or created successfully.',
-                "measurement": json.loads(json_util.dumps(measurement_obj.to_mongo))
+                "measurement": json.loads(json_util.dumps(measurement_obj.to_mongo()))
             }
             resp.status = falcon.HTTP_200
             resp.text = json.dumps(resp_text)
