@@ -3,6 +3,7 @@ import falcon
 from concurrent.futures import ThreadPoolExecutor
 from falcon_marshmallow import Marshmallow
 from pymongo import MongoClient
+from src.server.user_customization_api import UserCustomization
 from src.server.health import Health
 from src.server.outfits_apis import Outfits
 from src.server.measurement_apis import Measurements
@@ -49,6 +50,9 @@ def create_app(test_mode=False):
     _app.add_route('/api/default-options', DefaultOptions())
     _app.add_route('/api/designer-outfits', DesignerOutfits())
     _app.add_route('/api/user-profiles', UserProfiles())
+    _app.add_route('/api/user/customize/{id}', UserCustomization())
+    _app.add_route('/api/designer/generate-from-text/{id}', Designers())
+
 
     mongo.connect(
         host=settings.MONGO['HOST'],
