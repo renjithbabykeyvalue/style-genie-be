@@ -1,0 +1,11 @@
+.git
+.cache
+venv
+.vscode
+
+data/**/*
+
+resources/**/*
+.ipynb_checkpoints
+.pytest_cache
+.vscode
