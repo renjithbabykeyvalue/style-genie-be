@@ -9,3 +9,5 @@ gunicorn==21.2.0
 pyjwt==1.7.1
 pika==0.13.1
 pymongo==4.5.0
+mongoengine== 0.27.0
+falcon-multipart==0.2.0

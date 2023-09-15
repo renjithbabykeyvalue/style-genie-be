@@ -12,6 +12,8 @@ class JWTMiddleware(object):
     def _api_path_whitelist(self, api_path):
         whitelist_path = [
             '/api/health',
+            '/api/outfit',
+            '/api/user-measurement',
             '/api/public/fonts',
         ]
 
@@ -45,14 +47,16 @@ class JWTMiddleware(object):
             description = ('Please provide an auth token '
                            'as part of the request.')
 
-            raise falcon.HTTPUnauthorized(title='Auth token required', description=description)
+            raise falcon.HTTPUnauthorized(
+                title='Auth token required', description=description)
 
         is_valid, user_id, client_id = self._token_is_valid(token)
         if is_valid is False:
             description = ('The provided auth token is not valid. '
                            'Please request a new token and try again.')
 
-            raise falcon.HTTPUnauthorized(title='Authentication required', description=description)
+            raise falcon.HTTPUnauthorized(
+                title='Authentication required', description=description)
 
         req.user_id = user_id
         req.client_id = client_id

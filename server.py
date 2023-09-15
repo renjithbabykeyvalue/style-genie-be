@@ -4,17 +4,15 @@ from concurrent.futures import ThreadPoolExecutor
 from falcon_marshmallow import Marshmallow
 from pymongo import MongoClient
 from src.server.health import Health
+from src.server.outfits_apis import Outfits
+from src.server.measurement_apis import Measurements
 from src.server.jwt_middleware import DummyJWTMiddleware, JWTMiddleware
+from falcon_multipart.middleware import MultipartMiddleware
 import mongoengine as mongo
 
+import settings
 
 jwt_secret = os.environ.get('JWT_SECRET')
-mongodb_uri = 'mongodb+srv://style-genie:zsDbl2Npqiqd2inf@cluster0.ocf9ot0.mongodb.net/?retryWrites=true&w=majority'
-
-client = MongoClient(mongodb_uri)
-db = client.get_database(name="style-genie")
-
-print(db["users"].count_documents(filter={}))
 
 
 def create_app(test_mode=False):
@@ -22,7 +20,8 @@ def create_app(test_mode=False):
         _app = falcon.App(middleware=[
             JWTMiddleware(jwt_secret),
             Marshmallow(),
-            falcon.CORSMiddleware(allow_origins='*', allow_credentials='*')
+            falcon.CORSMiddleware(allow_origins='*', allow_credentials='*'),
+            MultipartMiddleware()
         ])
     else:
         _app = falcon.App(middleware=[
@@ -37,6 +36,13 @@ def create_app(test_mode=False):
     executor = ThreadPoolExecutor(workers)
 
     _app.add_route('/api/health', Health())
+    _app.add_route('/api/outfit', Outfits())
+    _app.add_route('/api/user-measurement', Measurements())
+
+    mongo.connect(
+        host=settings.MONGO['HOST'],
+        db=settings.MONGO['DATABASE']
+    )
 
     return _app
 
