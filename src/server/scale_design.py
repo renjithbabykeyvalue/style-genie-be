@@ -33,12 +33,9 @@ class ScaleDesigns(object):
             }
             resp.text = json.dumps(resptext)
             return
-        extension = get_extension_from_url(image_url)
         no_of_variations = body.get("no_of_variations", 3)
-        _, out_filename = tempfile.mkstemp(extension)
-        input_file_path = download_file(image_url, out_filename)
         prompt = "Can you suggest a diffrent fashion variation for this given dress."
-        tasks = [(prompt, input_file_path, f"image_to_image/{str(uuid.uuid4())}.png") for i in range(no_of_variations)]
+        tasks = [(prompt, image_url, f"image_to_image/{str(uuid.uuid4())}.png") for i in range(no_of_variations)]
         variations = scale_parallel(tasks=tasks)
         resp.status = falcon.HTTP_200
         resp.text = json.dumps({
