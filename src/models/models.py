@@ -50,6 +50,8 @@ class DefaultOption(Document):
     fabric = ReferenceField(Fabric)
     neckPattern = StringField(default="")
     sleevePattern = StringField(default="")
+    dyeable = StringField(default="")
+    image_url = StringField(default="")
 
 
 class CustomisedOption(Document):

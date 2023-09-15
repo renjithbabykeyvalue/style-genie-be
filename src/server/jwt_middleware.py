@@ -10,14 +10,7 @@ class JWTMiddleware(object):
         self.secret = secret
 
     def _api_path_whitelist(self, api_path):
-        whitelist_path = [
-            '/api/health',
-            '/api/outfit',
-            '/api/user-measurement',
-            '/api/designer',
-            '/api/default-options',
-            '/api/public/fonts',
-        ]
+        whitelist_path = []
 
         return api_path in whitelist_path
 
