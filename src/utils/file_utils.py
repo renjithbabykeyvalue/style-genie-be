@@ -29,4 +29,10 @@ def download_file(file_url: str, local_file_path = None):
         print(f"Failed to download the file. Status code: {response.status_code}")
         raise RuntimeError(f"File not available for download at:{file_url}")
     return local_file_path
+
+
+def get_extension_from_url(url):
+    if not url:
+        return None
+    return f".{url.split('.')[-1]}"
     
