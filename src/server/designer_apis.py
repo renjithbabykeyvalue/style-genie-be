@@ -18,3 +18,21 @@ class Designers(object):
             'status': 'ok',
             "out": json.loads(json_util.dumps(designer))
         })
+
+    def on_post(self, req, resp):
+        responses = []
+        for i in range(1, 5):  # Loop four times to generate four images
+            prompt = req.context['json']['prompt']
+            generated_image_name = f"https://style-genie.s3.ap-south-1.amazonaws.com/designer_text_gen_design_{i}.png"
+            customized_image = text_to_image(
+                prompt=prompt, s3_key=generated_image_name)
+
+            responses.append({
+                "image_url": json.loads(json_util.dumps(customized_image))
+            })
+
+        resp.status = falcon.HTTP_200
+        resp.text = json.dumps({
+            'status': 'ok',
+            'images': responses
+        })

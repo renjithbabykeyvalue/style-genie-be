@@ -1,20 +1,25 @@
 import json
 import falcon
 from bson import json_util
+import openai
+
 
 from src.models.models import Outfit
 
 
 class DesignerOutfits(object):
     def on_post(self, req, resp):
+
         try:
+            openai.my_api_key = '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'
             body = req.context['json']
 
             outfit = Outfit(
                 name=body['name'],
                 designer=body['designer'],
                 default_price=body['default_price'],
-                category=body['category']
+                category=body['category'],
+                description=body['description']
             )
 
             outfit_saved = outfit.save()

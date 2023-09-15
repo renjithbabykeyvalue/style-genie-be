@@ -7,8 +7,10 @@ from src.server.health import Health
 from src.server.outfits_apis import Outfits
 from src.server.measurement_apis import Measurements
 from src.server.designer_outfit_apis import DesignerOutfits
+from src.server.user_customization_api import UserCustomization
 from src.server.designer_apis import Designers
 from src.server.default_options_apis import DefaultOptions
+from src.server.login_apis import Login
 from src.server.user_profiles_api import UserProfiles
 from src.server.jwt_middleware import DummyJWTMiddleware, JWTMiddleware
 import mongoengine as mongo
@@ -49,6 +51,9 @@ def create_app(test_mode=False):
     _app.add_route('/api/default-options', DefaultOptions())
     _app.add_route('/api/designer-outfits', DesignerOutfits())
     _app.add_route('/api/user-profiles', UserProfiles())
+    _app.add_route('/api/user/customize/{id}', UserCustomization())
+    _app.add_route('/api/designer/generate-from-text', Designers())
+    _app.add_route('/api/login', Login())
 
     mongo.connect(
         host=settings.MONGO['HOST'],

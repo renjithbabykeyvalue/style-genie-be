@@ -34,6 +34,7 @@ class Outfit(Document):
     image_url = StringField(default="")
     default_price = IntField(required=True)
     category = StringField(default="")
+    description = StringField(default="")
 
 
 class UserMeasurement(Document):
