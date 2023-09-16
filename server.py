@@ -5,6 +5,7 @@ from falcon_marshmallow import Marshmallow
 from pymongo import MongoClient
 from src.server.health import Health
 from src.server.outfits_apis import Outfits
+from src.server.outfits_search_apis import OutfitsSearch
 from src.server.measurement_apis import Measurements
 from src.server.designer_outfit_apis import DesignerOutfits
 from src.server.user_customization_api import UserCustomization
@@ -46,6 +47,7 @@ def create_app(test_mode=False):
 
     _app.add_route('/api/health', Health())
     _app.add_route('/api/outfit', Outfits())
+    _app.add_route('/api/outfit/search/{prompt}', OutfitsSearch())
     _app.add_route('/api/user-measurement', Measurements())
     _app.add_route('/images/{name}', Item(image_store))
     _app.add_route('/api/designer', Designers())

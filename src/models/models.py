@@ -35,6 +35,7 @@ class Outfit(Document):
     default_price = IntField(required=True)
     category = StringField(default="")
     description = StringField(default="")
+    tags = ListField(StringField())
 
 
 class UserMeasurement(Document):

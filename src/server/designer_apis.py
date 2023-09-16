@@ -1,6 +1,7 @@
 import json
 import falcon
 from bson import json_util
+from src.services.generation.text_to_image import text_to_image
 
 from src.models.models import Designer
 
