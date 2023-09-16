@@ -31,7 +31,7 @@ class Measurements(object):
             body = req.context['json']
 
             user_profile = body["userProfile"]
-
+            actual_height = body.get("actual_height")
             if 'measurements' in body:
                 # Handle measurements
                 measurements = body["measurements"]
@@ -44,7 +44,7 @@ class Measurements(object):
                     }
                     return
                 front_image_url = body["front_image_url"]
-                measurements = get_body_measurements(front_image_url)
+                measurements = get_body_measurements(front_image_url, actual_height=actual_height)
 
             existing_measurements = UserMeasurement.objects(
                 userProfile=user_profile)
