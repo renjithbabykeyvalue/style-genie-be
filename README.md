@@ -19,5 +19,5 @@ gunicorn -b 0.0.0.0:7500 server:app --reload
     pip install -r requirements.txt
   ```
 - run server:
-  `gunicorn -b 0.0.0.0:7500 server:app --reload`
+  `gunicorn --timeout 120 -b 0.0.0.0:7500 server:app --reload`
 - test helth endpoint at: http://localhost:7500/api/health

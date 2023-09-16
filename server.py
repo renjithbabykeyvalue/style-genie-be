@@ -9,6 +9,7 @@ from src.server.measurement_apis import Measurements
 from src.server.designer_outfit_apis import DesignerOutfits
 from src.server.user_customization_api import UserCustomization
 from src.server.designer_apis import Designers
+from src.server.scale_design import ScaleDesigns
 from src.server.default_options_apis import DefaultOptions
 from src.server.login_apis import Login
 from src.server.user_profiles_api import UserProfiles
@@ -48,6 +49,7 @@ def create_app(test_mode=False):
     _app.add_route('/api/user-measurement', Measurements())
     _app.add_route('/images/{name}', Item(image_store))
     _app.add_route('/api/designer', Designers())
+    _app.add_route('/api/variations', ScaleDesigns())
     _app.add_route('/api/default-options', DefaultOptions())
     _app.add_route('/api/designer-outfits', DesignerOutfits())
     _app.add_route('/api/user-profiles', UserProfiles())
